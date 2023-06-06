@@ -9,21 +9,193 @@ datasource db {
     referentialIntegrity = "prisma"
 }
 
-model Product {
-    id          Int       @id @default(autoincrement())
+model Users {
+    id          String       @id
     name        String
-    description String
-    price       Decimal
-    image       String
-    category    Category? @relation(fields: [category_id], references: [id])
-    category_id Int
+    email       String
+    password    String
+    created_at  DateTime     @default(now())
+    updated_at  DateTime?
+    deleted_at  DateTime?
+    is_deleted  Boolean     @default(false)
+    role        Roles @relation(fields: [role_id], references: [id])
+    role_id     Int
 
-    @@index([category_id])
+    @@index([role_id])
+
+    wishlist_destinations WishlistDestinations[]
+    place_managers PlaceManagers[]
+    place_reviews PlaceReviews[]
 }
 
-model Category {
+model Roles {
     id          Int       @id @default(autoincrement())
     name        String
     description String
-    products    Product[]
+    created_at  DateTime     @default(now())
+    updated_at  DateTime?
+    deleted_at  DateTime?
+    is_deleted  Boolean    @default(false)
+
+    users       Users[]
+}
+
+model Files {
+    id          String       @id
+    filename    String
+    filecode    Bytes
+    created_at  DateTime     @default(now())
+    updated_at  DateTime?
+    deleted_at  DateTime?
+    is_deleted  Boolean    @default(false)
+
+    blogs       Blogs[]
+}
+
+model Blogs {
+    id          String       @id
+    slug        String
+    title       String
+    content     Bytes
+    file_id     Files @relation(fields: [cover], references: [id])
+    cover       String
+    created_at  DateTime     @default(now())
+    updated_at  DateTime?
+    deleted_at  DateTime?
+    is_deleted  Boolean    @default(false)
+
+    @@index([slug])
+}
+
+model Places {
+    id          String      @id
+    name        String
+    description Bytes
+    maps_url    String
+    address     String
+    village     String
+    subdistrict String
+    regency     String
+    province    String
+    created_at  DateTime     @default(now())
+    updated_at  DateTime?
+    deleted_at  DateTime?
+    is_deleted  Boolean    @default(false)
+    is_publish  Boolean    @default(false)
+
+    wishlist_destinations WishlistDestinations[]
+    place_managers PlaceManagers[]
+    place_reviews PlaceReviews[]
+    place_categories PlaceCategories[]
+    contact_place_managers ContactPlaceManagers[]
+}
+
+model WishlistDestinations {
+    id          String       @id
+    user        Users @relation(fields: [user_id], references: [id])
+    user_id     String
+    place       Places @relation(fields: [place_id], references: [id])
+    place_id    String
+    created_at  DateTime     @default(now())
+
+    @@index([user_id])
+    @@index([place_id])
+}
+
+model PlaceManagers {
+    id          String       @id
+    user        Users @relation(fields: [user_id], references: [id])
+    user_id     String
+    place       Places @relation(fields: [place_id], references: [id])
+    place_id    String
+    created_at  DateTime     @default(now())
+
+    @@index([user_id])
+    @@index([place_id])
+}
+
+model Reviews {
+    id          String       @id
+    rating      Int
+    review      String
+    created_at  DateTime     @default(now())
+    updated_at  DateTime?
+    deleted_at  DateTime?
+    is_deleted  Boolean    @default(false)
+
+    place_reviews PlaceReviews[]
+}
+
+model PlaceReviews {
+    id          String       @id
+    user        Users @relation(fields: [user_id], references: [id])
+    user_id     String
+    place       Places @relation(fields: [place_id], references: [id])
+    place_id    String
+    review      Reviews @relation(fields: [review_id], references: [id])
+    review_id   String
+    created_at  DateTime     @default(now())
+
+    @@index([user_id])
+    @@index([place_id])
+    @@index([review_id])
+}
+
+model Categories {
+    id          String       @id
+    name        String
+    created_at  DateTime     @default(now())
+    updated_at  DateTime?
+    deleted_at  DateTime?
+    is_deleted  Boolean    @default(false)
+
+    place_categories PlaceCategories[]
+}
+
+model PlaceCategories {
+    id          String       @id
+    category    Categories @relation(fields: [category_id], references: [id])
+    category_id String
+    place       Places @relation(fields: [place_id], references: [id])
+    place_id    String
+    created_at  DateTime     @default(now())
+
+    @@index([category_id])
+    @@index([place_id])
+}
+
+model ContactPlaceManagers {
+    id          String       @id
+    contact     String
+    email       String
+    place       Places @relation(fields: [place_id], references: [id])
+    place_id    String
+    created_at  DateTime     @default(now())
+
+    contact_capabilities ContactCapabilities[]
+
+    @@index([place_id])
+}
+
+model Capabilities {
+    id          String       @id
+    name        String
+    created_at  DateTime     @default(now())
+    updated_at  DateTime?
+    deleted_at  DateTime?
+    is_deleted  Boolean    @default(false)
+
+    contact_capabilities ContactCapabilities[]
+}
+
+model ContactCapabilities {
+    id                          String       @id
+    capability                  Capabilities @relation(fields: [capability_id], references: [id])
+    capability_id               String
+    contact_place_manager       ContactPlaceManagers @relation(fields: [contact_place_manager_id], references: [id])
+    contact_place_manager_id    String
+    created_at  DateTime     @default(now())
+
+    @@index([capability_id])
+    @@index([contact_place_manager_id])
 }
