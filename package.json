@@ -7,8 +7,8 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "migrate up": "npx prisma db push",
-        "migrate down": "npx prisma db pull"
+        "migrate:up": "npx prisma db push",
+        "migrate:down": "npx prisma db pull"
     },
     "dependencies": {
         "@prisma/client": "^3.8.1",

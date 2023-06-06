@@ -65,6 +65,7 @@ model Blogs {
     is_deleted  Boolean    @default(false)
 
     @@index([slug])
+    @@index([cover])
 }
 
 model Places {
