@@ -39,7 +39,7 @@ export async function POST(request) {
         return BadRequestError('Email dan password tidak valid!');
     }
 
-    const token = await jwtSign(user, JWT_SECRET_KEY, JWT_EXPIRED_AGE);
+    const token = await jwtSign(user.data, JWT_SECRET_KEY, JWT_EXPIRED_AGE);
 
     const res = SuccessOK('Berhasil login!', token);
     res.cookies.set('token', token);

@@ -1,8 +1,12 @@
 'use client';
+import useUserFromToken from '@/hooks/useUserFromToken';
 import { Dialog } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useState } from 'react';
+import Avatar from '../ui/Avatar';
+import { getFirstWord, getInitials } from '@/utils';
 
 const navigation = [
     { name: 'Wisata', href: '#' },
@@ -13,6 +17,7 @@ const navigation = [
 
 const Navbar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const user = useUserFromToken();
     return (
         <header className="fixed backdrop-blur-md inset-x-0 top-0 z-50">
             <nav
@@ -47,12 +52,21 @@ const Navbar = () => {
                     ))}
                 </div>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                    <a
-                        href="#"
-                        className="text-sm font-semibold leading-6 text-gray-900"
-                    >
-                        Log In <span aria-hidden="true">&rarr;</span>
-                    </a>
+                    {user ? (
+                        <div className="flex items-center gap-x-2">
+                            <Avatar placeholder={getInitials(user.name)} />
+                            <p className="text-gray-900 font-medium">
+                                Hi, {getFirstWord(user.name)}
+                            </p>
+                        </div>
+                    ) : (
+                        <Link
+                            href="/login"
+                            className="text-sm font-semibold leading-6 text-gray-900"
+                        >
+                            Log In <span aria-hidden="true">&rarr;</span>
+                        </Link>
+                    )}
                 </div>
             </nav>
             <Dialog
@@ -66,11 +80,7 @@ const Navbar = () => {
                     <div className="flex items-center justify-between">
                         <a href="#" className="-m-1.5 p-1.5">
                             <span className="sr-only">Nusantara Explorer</span>
-                            <img
-                                className="h-8 w-auto"
-                                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                                alt=""
-                            />
+                            <p className="font-bold text-gray-900">NusaExp</p>
                         </a>
                         <button
                             type="button"
@@ -95,12 +105,24 @@ const Navbar = () => {
                                 ))}
                             </div>
                             <div className="py-6">
-                                <a
-                                    href="#"
-                                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                                >
-                                    Log In
-                                </a>
+                                {user ? (
+                                    <div className="flex items-center gap-x-2">
+                                        <Avatar
+                                            placeholder={getInitials(user.name)}
+                                        />
+                                        <p className="text-gray-900 font-medium">
+                                            Hi, {getFirstWord(user.name)}
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <Link
+                                        href="/login"
+                                        className="text-sm font-semibold leading-6 text-gray-900"
+                                    >
+                                        Log In{' '}
+                                        <span aria-hidden="true">&rarr;</span>
+                                    </Link>
+                                )}
                             </div>
                         </div>
                     </div>

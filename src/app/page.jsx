@@ -1,6 +1,5 @@
 'use client';
 
-import ComingSoon from '@/components/ComingSoon';
 import AboutUsSection from '@/components/sections/AboutUsSection';
 import CTASection from '@/components/sections/CTASection';
 import HeroSection from '@/components/sections/HeroSection';
