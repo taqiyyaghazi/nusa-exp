@@ -3,6 +3,7 @@ export default function LoginForm({
     handleSubmit,
     errors,
     onSubmit,
+    isLoading,
 }) {
     return (
         <>
@@ -66,12 +67,23 @@ export default function LoginForm({
                 </div>
 
                 <div>
-                    <button
-                        type="submit"
-                        className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                        Sign in
-                    </button>
+                    {isLoading ? (
+                        <button
+                            type="submit"
+                            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled
+                        >
+                            <span className="loading loading-spinner loading-sm"></span>{' '}
+                            <p className="ml-2">Loading...</p>
+                        </button>
+                    ) : (
+                        <button
+                            type="submit"
+                            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Login
+                        </button>
+                    )}
                 </div>
             </form>
         </>

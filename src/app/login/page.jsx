@@ -1,12 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import LoginForm from '@/components/forms/LoginForm';
 import { useAppSelector } from '@/hooks/useRedux';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useLoginMutation } from '@/services/api/authApi';
 import Link from 'next/link';
+import useAlert from '@/hooks/useAlert';
+import { useRouter } from 'next/navigation';
 
 const schema = yup
     .object({
@@ -24,12 +27,29 @@ export default function Login() {
     } = useForm({
         resolver: yupResolver(schema),
     });
+    const showAlert = useAlert();
+    const router = useRouter();
 
     const [login, { data, isLoading, isError, error }] = useLoginMutation();
 
     const onSubmit = (data) => {
         login(data);
     };
+
+    useEffect(() => {
+        if (isError) {
+            showAlert(error.data.msg, 'error');
+        }
+        if (data) {
+            showAlert(data.msg, 'success');
+            const timeout = setTimeout(() => {
+                router.push('/');
+            }, 3000);
+            return () => {
+                clearTimeout(timeout);
+            };
+        }
+    }, [isError, data]);
 
     return (
         <main className="flex min-h-screen">
@@ -45,6 +65,7 @@ export default function Login() {
                         handleSubmit={handleSubmit}
                         errors={errors}
                         onSubmit={onSubmit}
+                        isLoading={isLoading}
                     />
                     <p className="mt-10 text-center text-sm text-gray-500">
                         Don&apos;t have an account?{' '}
