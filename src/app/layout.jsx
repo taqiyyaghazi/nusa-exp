@@ -1,6 +1,8 @@
-import { Providers } from '@/utils/provider';
+import Providers from '@/components/Providers';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import Navbar from '@/components/layouts/Navbar';
+import Footer from '@/components/layouts/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -11,12 +13,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="en">
+        <html lang="en" className="scroll-smooth">
             <head>
                 <link rel="manifest" href="/manifest.json" />
             </head>
             <body className={inter.className}>
-                <Providers>{children}</Providers>
+                <Providers>
+                    <Navbar />
+                    {children}
+                    <Footer />
+                </Providers>
             </body>
         </html>
     );
