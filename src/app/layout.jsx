@@ -13,11 +13,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="en" className="scroll-smooth">
+        <html lang="en" className="scroll-smooth h-full bg-white">
             <head>
                 <link rel="manifest" href="/manifest.json" />
             </head>
-            <body className={inter.className}>
+            <body className={`${inter.className} h-full`}>
                 <Providers>
                     <Navbar />
                     {children}
