@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import RegisterForm from '@/components/forms/RegisterForm';
 import useAlert from '@/hooks/useAlert';

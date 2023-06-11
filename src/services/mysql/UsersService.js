@@ -31,7 +31,7 @@ class UsersService {
             return defaultResult(false, 'Gagal menambahkan user!');
         }
 
-        return defaultResult(true, 'Berhasil menambahkan user!', user);
+        return defaultResult(true, 'Berhasil registrasi!', user);
     }
 
     async checkEmailAvailability(email) {
