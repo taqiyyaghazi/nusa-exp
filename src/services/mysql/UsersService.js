@@ -46,6 +46,28 @@ class UsersService {
         }
         return true;
     }
+    async getUserByEmail(email) {
+        const user = await this._prisma.users.findUnique({
+            where: {
+                email: email,
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                password: true,
+                role_id: true,
+            },
+        });
+
+        if (!user) {
+            return defaultResult(
+                false,
+                'Akun tidak tersedia, silahkan register terlebih dahulu'
+            );
+        }
+        return defaultResult(true, 'Berhasil mendapatkan user', user);
+    }
 }
 
 export default UsersService;

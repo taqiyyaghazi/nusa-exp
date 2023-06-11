@@ -6,3 +6,8 @@ export const UserPayloadSchema = Joi.object({
     password: Joi.string().required(),
     role_id: Joi.number().required(),
 });
+
+export const UserLoginPayloadSchema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+});
