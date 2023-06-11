@@ -16,8 +16,12 @@ export async function POST(request) {
     if (!status) {
         return BadRequestError(msg);
     }
+    const { password, email } = req;
+    const isAvailable = await usersService.checkEmailAvailability(email);
 
-    const { password } = req;
+    if (!isAvailable) {
+        return BadRequestError('Gagal registrasi, email sudah digunakan!');
+    }
 
     const salt = await bcrypt.genSalt(SALT_ROUNDS);
     const passwordHash = await bcrypt.hash(password, salt);

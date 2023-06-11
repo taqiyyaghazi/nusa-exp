@@ -3,6 +3,7 @@ export default function RegisterForm({
     handleSubmit,
     errors,
     onSubmit,
+    isLoading,
 }) {
     return (
         <>
@@ -102,9 +103,7 @@ export default function RegisterForm({
                                 checked
                                 {...register('role_id')}
                             />
-                            <span className=" text-gray-900">
-                                Wisatawan
-                            </span>
+                            <span className=" text-gray-900">Wisatawan</span>
                         </div>
                         <div className="flex items-center gap-x-2">
                             <input
@@ -128,25 +127,25 @@ export default function RegisterForm({
                 </div>
 
                 <div>
-                    {/* TO DO: buat disable ketika loading */}
-                    <button
-                        type="submit"
-                        className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                        Register
-                    </button>
+                    {isLoading ? (
+                        <button
+                            type="submit"
+                            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled
+                        >
+                            <span className="loading loading-spinner loading-sm"></span>{' '}
+                            <p className="ml-2">Loading...</p>
+                        </button>
+                    ) : (
+                        <button
+                            type="submit"
+                            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Register
+                        </button>
+                    )}
                 </div>
             </form>
-
-            <p className="mt-10 text-center text-sm text-gray-500">
-                Already have an account?{' '}
-                <a
-                    href="/login"
-                    className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-                >
-                    Login
-                </a>
-            </p>
         </>
     );
 }

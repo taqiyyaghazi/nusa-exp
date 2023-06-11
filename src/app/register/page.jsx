@@ -1,7 +1,11 @@
 'use client';
 import RegisterForm from '@/components/forms/RegisterForm';
+import useAlert from '@/hooks/useAlert';
 import { useRegisterMutation } from '@/services/api/authApi';
 import { yupResolver } from '@hookform/resolvers/yup';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -23,15 +27,31 @@ const Register = () => {
     } = useForm({
         resolver: yupResolver(schema),
     });
+    const showAlert = useAlert();
+    const router = useRouter();
 
     const [registerUser, { data, isLoading, isError, error }] =
         useRegisterMutation();
 
     const onSubmit = (data) => {
         registerUser(data);
-        // TO DO: tampilkan popup berhasil atau gagal
-        // TO DO: redirect ke login page
     };
+
+    useEffect(() => {
+        if (isError) {
+            showAlert(error.data.msg, 'error');
+        }
+        if (data) {
+            showAlert(data.msg, 'success');
+            const timeout = setTimeout(() => {
+                router.push('/login');
+            }, 3000);
+            return () => {
+                clearTimeout(timeout);
+            };
+        }
+    }, [isError, data]);
+
     return (
         <main className="flex min-h-screen">
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -46,7 +66,17 @@ const Register = () => {
                         handleSubmit={handleSubmit}
                         errors={errors}
                         onSubmit={onSubmit}
+                        isLoading={isLoading}
                     />
+                    <p className="mt-10 text-center text-sm text-gray-500">
+                        Already have an account?{' '}
+                        <Link
+                            href="/login"
+                            className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+                        >
+                            Login
+                        </Link>
+                    </p>
                 </div>
             </div>
         </main>

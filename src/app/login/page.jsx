@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useLoginMutation } from '@/services/api/authApi';
+import Link from 'next/link';
 
 const schema = yup
     .object({
@@ -24,11 +25,9 @@ export default function Login() {
         resolver: yupResolver(schema),
     });
 
-    const [login, { isLoading, isError, error }] = useLoginMutation();
-    console.log(isLoading, isError, error);
+    const [login, { data, isLoading, isError, error }] = useLoginMutation();
 
     const onSubmit = (data) => {
-        console.log(data);
         login(data);
     };
 
@@ -47,6 +46,15 @@ export default function Login() {
                         errors={errors}
                         onSubmit={onSubmit}
                     />
+                    <p className="mt-10 text-center text-sm text-gray-500">
+                        Don&apos;t have an account?{' '}
+                        <Link
+                            href="/register"
+                            className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+                        >
+                            Register
+                        </Link>
+                    </p>
                 </div>
             </div>
         </main>

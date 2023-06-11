@@ -11,7 +11,7 @@ class UsersService {
 
     async addUser({ name, email, password, role_id }) {
         const id = nanoid(ID_SIZE);
-        const role = await this._prisma.users.create({
+        const user = await this._prisma.users.create({
             data: {
                 id: id,
                 name: name,
@@ -27,27 +27,25 @@ class UsersService {
             },
         });
 
-        if (!role) {
+        if (!user) {
             return defaultResult(false, 'Gagal menambahkan user!');
         }
 
-        return defaultResult(true, 'Berhasil menambahkan user!', role);
+        return defaultResult(true, 'Berhasil menambahkan user!', user);
     }
 
-    // async getAllRoles() {
-    //     const roles = await this._prisma.roles.findMany({
-    //         where: {
-    //             is_deleted: false,
-    //         },
-    //         select: {
-    //             id: true,
-    //             name: true,
-    //             description: true,
-    //         },
-    //     });
+    async checkEmailAvailability(email) {
+        const user = await this._prisma.users.findUnique({
+            where: {
+                email: email,
+            },
+        });
 
-    //     return defaultResult(true, 'Berhasil mendapatkan roles!', roles);
-    // }
+        if (user) {
+            return false;
+        }
+        return true;
+    }
 }
 
 export default UsersService;
