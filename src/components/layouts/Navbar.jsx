@@ -62,7 +62,7 @@ const Navbar = () => {
                     ) : (
                         <Link
                             href="/login"
-                            className="text-sm font-semibold leading-6 text-gray-900"
+                            className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-500 ease-in-out duration-300"
                         >
                             Log In <span aria-hidden="true">&rarr;</span>
                         </Link>
@@ -117,7 +117,7 @@ const Navbar = () => {
                                 ) : (
                                     <Link
                                         href="/login"
-                                        className="text-sm font-semibold leading-6 text-gray-900"
+                                        className="text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"
                                     >
                                         Log In{' '}
                                         <span aria-hidden="true">&rarr;</span>
