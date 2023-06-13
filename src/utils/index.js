@@ -19,3 +19,30 @@ export const getFirstWord = (str) => {
     }
     return words[0];
 };
+
+export const getFileBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            resolve(reader.result);
+        };
+
+        reader.onerror = (error) => {
+            reject(error);
+        };
+
+        reader.readAsDataURL(file);
+    });
+};
+
+export const extractURLFromString = (string) => {
+    const regex = /src="([^"]+)"/; 
+    const match = string.match(regex);
+  
+    if (match && match[1]) {
+      return match[1];
+    } else {
+      return null;
+    }
+  }
