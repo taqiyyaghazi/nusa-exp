@@ -49,10 +49,14 @@ const AddPlaces = () => {
     const onSubmit = async (data) => {
         const imageBase64 = await getFileBase64(data.photo[0]);
         const mapsUrl = extractURLFromString(data.mapsUrl);
+        const description = draftToHtml(
+            convertToRaw(editorValue.getCurrentContent())
+        );
         console.log({
             ...data,
             photo: imageBase64,
             mapsUrl,
+            description: description,
             filename: data.photo[0].name,
         });
     };

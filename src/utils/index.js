@@ -37,12 +37,22 @@ export const getFileBase64 = (file) => {
 };
 
 export const extractURLFromString = (string) => {
-    const regex = /src="([^"]+)"/; 
+    const regex = /src="([^"]+)"/;
     const match = string.match(regex);
-  
+
     if (match && match[1]) {
-      return match[1];
+        return match[1];
     } else {
-      return null;
+        return null;
     }
-  }
+};
+
+export const extractToken = (bearerToken) => {
+    const tokenParts = bearerToken.split(' ');
+
+    if (tokenParts.length === 2 && tokenParts[0] === 'Bearer') {
+        return tokenParts[1];
+    }
+
+    return null;
+}

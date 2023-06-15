@@ -4,6 +4,9 @@ import { defaultResult } from '.';
 export const BadRequestError = (msg) => {
     return NextResponse.json(defaultResult(false, msg), { status: 400 });
 };
+export const UnauthorizedError = (msg) => {
+    return NextResponse.json(defaultResult(false, msg), { status: 401 });
+};
 
 export const InternalServerError = (msg) => {
     return NextResponse.json(defaultResult(false, msg), { status: 500 });

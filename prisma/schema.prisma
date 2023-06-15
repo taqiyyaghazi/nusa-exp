@@ -43,20 +43,21 @@ model Roles {
 model Files {
     id          String       @id
     filename    String
-    filecode    Bytes
+    filecode    String       @db.LongText
     created_at  DateTime     @default(now())
     updated_at  DateTime?
     deleted_at  DateTime?
     is_deleted  Boolean    @default(false)
 
     blogs       Blogs[]
+    places      Places[]
 }
 
 model Blogs {
     id          String       @id
     slug        String
     title       String
-    content     Bytes
+    content     String       @db.LongText
     file_id     Files @relation(fields: [cover], references: [id])
     cover       String
     created_at  DateTime     @default(now())
@@ -71,7 +72,9 @@ model Blogs {
 model Places {
     id          String      @id
     name        String
-    description Bytes
+    file_id       Files @relation(fields: [cover], references: [id])
+    cover       String
+    description String      @db.LongText
     maps_url    String
     address     String
     village     String
@@ -89,6 +92,8 @@ model Places {
     place_reviews PlaceReviews[]
     place_categories PlaceCategories[]
     contact_place_managers ContactPlaceManagers[]
+
+    @@index([cover])
 }
 
 model WishlistDestinations {
