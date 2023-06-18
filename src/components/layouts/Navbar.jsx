@@ -1,12 +1,21 @@
 'use client';
-import useUserFromToken from '@/hooks/useUserFromToken';
+import { ROLE_VISITOR } from '@/constant';
+import useAlert from '@/hooks/useAlert';
+import { deleteCookie, getCookieValue } from '@/utils/cookies';
 import { Dialog } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import Image from 'next/image';
+import {
+    Bars3Icon,
+    HeartIcon,
+    PowerIcon,
+    PresentationChartBarIcon,
+    XMarkIcon,
+} from '@heroicons/react/24/outline';
+import jwt_decode from 'jwt-decode';
 import Link from 'next/link';
-import React, { useState } from 'react';
-import Avatar from '../ui/Avatar';
-import { getFirstWord, getInitials } from '@/utils';
+import { useEffect, useState } from 'react';
+import ProfileMenu from '../ui/ProfileMenu';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import { setAuthUser, unsetAuthUser } from '@/stores/authUser/authUserSlice';
 
 const navigation = [
     { name: 'Wisata', href: '#' },
@@ -17,7 +26,59 @@ const navigation = [
 
 const Navbar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const user = useUserFromToken();
+    const authUser = useAppSelector((state) => state.authUser);
+    const dispatch = useAppDispatch();
+    const showAlert = useAlert();
+
+    const handleLogout = () => {
+        showAlert(
+            'Berhasil Logout',
+            'confirm',
+            'Anda akan keluar dari aku ini',
+            'Ya',
+            () => {
+                dispatch(unsetAuthUser())
+                deleteCookie('token');
+            }
+        );
+    };
+
+    const profileMenuVisitor = [
+        {
+            label: 'My Wishlist',
+            icon: HeartIcon,
+        },
+        {
+            label: 'Sign Out',
+            icon: PowerIcon,
+            onClick: () => handleLogout(),
+        },
+    ];
+
+    const profileMenuManager = [
+        {
+            label: 'Dashboard',
+            icon: PresentationChartBarIcon,
+        },
+        {
+            label: 'Sign Out',
+            icon: PowerIcon,
+        },
+    ];
+
+    useEffect(() => {
+        const token = getCookieValue('token');
+        if (token) {
+            try {
+                const decodedToken = jwt_decode(token);
+
+                dispatch(setAuthUser(decodedToken));
+            } catch (error) {
+                console.error('Invalid token');
+            }
+        }
+    }, []);
+
     return (
         <header className="fixed backdrop-blur-md inset-x-0 top-0 z-50">
             <nav
@@ -52,13 +113,15 @@ const Navbar = () => {
                     ))}
                 </div>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                    {user ? (
-                        <div className="flex items-center gap-x-2">
-                            <Avatar placeholder={getInitials(user.name)} />
-                            <p className="text-gray-900 font-medium">
-                                Hi, {getFirstWord(user.name)}
-                            </p>
-                        </div>
+                    {authUser ? (
+                        <ProfileMenu
+                            username={authUser.name}
+                            menuItems={
+                                authUser.role_id === ROLE_VISITOR
+                                    ? profileMenuVisitor
+                                    : profileMenuManager
+                            }
+                        />
                     ) : (
                         <Link
                             href="/login"
@@ -105,15 +168,15 @@ const Navbar = () => {
                                 ))}
                             </div>
                             <div className="py-6">
-                                {user ? (
-                                    <div className="flex items-center gap-x-2">
-                                        <Avatar
-                                            placeholder={getInitials(user.name)}
-                                        />
-                                        <p className="text-gray-900 font-medium">
-                                            Hi, {getFirstWord(user.name)}
-                                        </p>
-                                    </div>
+                                {authUser ? (
+                                    <ProfileMenu
+                                        username={authUser.name}
+                                        menuItems={
+                                            authUser.role_id === ROLE_VISITOR
+                                                ? profileMenuVisitor
+                                                : profileMenuManager
+                                        }
+                                    />
                                 ) : (
                                     <Link
                                         href="/login"

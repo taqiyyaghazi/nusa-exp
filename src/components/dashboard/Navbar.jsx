@@ -264,7 +264,7 @@ export default function ComplexNavbar() {
     }, []);
 
     return (
-        <Navbar className="mx-auto p-2 lg:rounded-full lg:pl-6 fixed top-2 left-4">
+        <Navbar className="mx-auto p-2 lg:rounded-full lg:pl-6 fixed top-2 left-4 z-10">
             <div className="relative mx-auto flex items-center text-blue-gray-900">
                 <IconButton
                     size="sm"

@@ -1,15 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import LoginForm from '@/components/forms/LoginForm';
-import { useAppSelector } from '@/hooks/useRedux';
-import React, { useEffect } from 'react';
+import useAlert from '@/hooks/useAlert';
+import { useAppDispatch } from '@/hooks/useRedux';
+import { useLoginMutation } from '@/services/api/authApi';
+import { setAuthUser } from '@/stores/authUser/authUserSlice';
+import { yupResolver } from '@hookform/resolvers/yup';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useLoginMutation } from '@/services/api/authApi';
-import Link from 'next/link';
-import useAlert from '@/hooks/useAlert';
-import { useRouter } from 'next/navigation';
 
 const schema = yup
     .object({
@@ -27,6 +28,7 @@ export default function Login() {
     } = useForm({
         resolver: yupResolver(schema),
     });
+    const dispatch = useAppDispatch()
     const showAlert = useAlert();
     const router = useRouter();
 
@@ -42,6 +44,7 @@ export default function Login() {
         }
         if (data) {
             showAlert(data.msg, 'success');
+            dispatch(setAuthUser(data.data))
             const timeout = setTimeout(() => {
                 router.push('/');
             }, 3000);

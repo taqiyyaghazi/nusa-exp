@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = 'coba';
+const initialState = null;
 
 export const authUserSlice = createSlice({
     name: 'authUser',
@@ -8,9 +8,11 @@ export const authUserSlice = createSlice({
     reducers: {
         setAuthUser: (state, action) => {
             state = action.payload;
+            return state
         },
         unsetAuthUser: (state) => {
             state = null;
+            return state
         },
     },
 });

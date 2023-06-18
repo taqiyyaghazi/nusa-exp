@@ -13,8 +13,6 @@ class FilesService {
         let file;
         const id = nanoid(ID_SIZE);
 
-        console.log(transaction)
-
         if (transaction) {
             file = await transaction.files.create({
                 data: { id: id, filename: filename, filecode: filecode },

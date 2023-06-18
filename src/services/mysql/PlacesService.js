@@ -25,7 +25,6 @@ class PlacesService {
         const fileId = nanoid(ID_SIZE);
         const placeId = nanoid(ID_SIZE);
         const placeManagerId = nanoid(ID_SIZE);
-        console.log(typeof photo)
         const createFile = this._prisma.files.create({
             data: {
                 id: fileId,
@@ -74,7 +73,6 @@ class PlacesService {
                 placeManagers,
             });
         } catch (err) {
-            // console.log(err);
             return defaultResult(false, 'Gagal menambahkan wisata!', err);
         }
     }
@@ -89,7 +87,7 @@ class PlacesService {
             LEFT JOIN Files f ON f.id = p.cover
             WHERE p.is_deleted = 0
             `;
-        // console.log(Buffer.from(places[0].description).toString('utf-8'));
+        
         return defaultResult(true, 'Berhasil mendapatkan wisata!', places);
     }
 }
