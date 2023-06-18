@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import ProfileMenu from '../ui/ProfileMenu';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { setAuthUser, unsetAuthUser } from '@/stores/authUser/authUserSlice';
+import { useRouter } from 'next/navigation';
 
 const navigation = [
     { name: 'Wisata', href: '#' },
@@ -29,6 +30,7 @@ const Navbar = () => {
     const authUser = useAppSelector((state) => state.authUser);
     const dispatch = useAppDispatch();
     const showAlert = useAlert();
+    const router = useRouter();
 
     const handleLogout = () => {
         showAlert(
@@ -47,6 +49,7 @@ const Navbar = () => {
         {
             label: 'My Wishlist',
             icon: HeartIcon,
+            onClick: () => router.push('/wishlists')
         },
         {
             label: 'Sign Out',
@@ -59,10 +62,12 @@ const Navbar = () => {
         {
             label: 'Dashboard',
             icon: PresentationChartBarIcon,
+            onClick: () => router.push('/dashboard/managers')
         },
         {
             label: 'Sign Out',
             icon: PowerIcon,
+            onClick: () => handleLogout(),
         },
     ];
 

@@ -41,7 +41,7 @@ export async function POST(request) {
 
     const token = await jwtSign(user.data, JWT_SECRET_KEY, JWT_EXPIRED_AGE);
 
-    const res = SuccessOK('Berhasil login!', {...user.data, password});
+    const res = SuccessOK('Berhasil login!', {...user.data, password: undefined});
     res.cookies.set('token', token);
     return res;
 }
