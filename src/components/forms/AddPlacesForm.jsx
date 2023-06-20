@@ -138,9 +138,9 @@ const AddPlacesForm = ({
                     <iframe
                         src={mapsUrl}
                         className="w-full h-72"
-                        allowfullscreen=""
+                        allowFullScreen=""
                         loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"
+                        referrerPolicy="no-referrer-when-downgrade"
                     ></iframe>
                 )}
 
@@ -191,22 +191,22 @@ const AddPlacesForm = ({
                     </div>
                     <div className="flex flex-1 items-center gap-x-2">
                         <label
-                            htmlFor="subDistrict"
+                            htmlFor="subdistrict"
                             className="block w-1/3 text-sm font-medium leading-6 text-gray-900"
                         >
                             Kecamatan
                         </label>
                         <div className="mt-2 w-2/3">
                             <input
-                                id="subDistrict"
-                                name="subDistrict"
+                                id="subdistrict"
+                                name="subdistrict"
                                 type="text"
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-900 sm:text-sm sm:leading-6"
-                                {...register('subDistrict')}
+                                {...register('subdistrict')}
                             />
-                            {errors.subDistrict && (
+                            {errors.subdistrict && (
                                 <span className="normal-case text-xs text-red-400">
-                                    {errors.subDistrict.message}
+                                    {errors.subdistrict.message}
                                 </span>
                             )}
                         </div>

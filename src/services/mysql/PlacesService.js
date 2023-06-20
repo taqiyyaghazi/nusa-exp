@@ -25,11 +25,12 @@ class PlacesService {
         const fileId = nanoid(ID_SIZE);
         const placeId = nanoid(ID_SIZE);
         const placeManagerId = nanoid(ID_SIZE);
+        const desc = Buffer.from(description, 'utf8');
         const createFile = this._prisma.files.create({
             data: {
                 id: fileId,
                 filename: filename,
-                filecode: photo,
+                file_url: photo,
             },
             select: {
                 id: true,
@@ -39,7 +40,7 @@ class PlacesService {
             data: {
                 id: placeId,
                 name: name,
-                description: description,
+                description: desc,
                 maps_url: mapsUrl,
                 address: address,
                 village: village,
@@ -73,21 +74,34 @@ class PlacesService {
                 placeManagers,
             });
         } catch (err) {
+            console.log(err)
             return defaultResult(false, 'Gagal menambahkan wisata!', err);
         }
     }
 
+    blobToText = (blob) => {
+        const reader = new FileReader();
+        return new Promise((resolve, reject) => {
+            reader.onload = () => {
+                resolve(reader.result);
+            };
+            reader.onerror = () => {
+                reject(reader.error);
+            };
+            reader.readAsText(blob);
+        });
+    };
+
     async getAllPlaces() {
         const places = await this._prisma.$queryRaw`
-            SELECT p.name, p.cover, p.description, p.maps_url, 
-            p.address, p.village, p.subdistrict, p.regency, 
-            p.province, f.filename, f.filecode 
+            SELECT p.name, p.cover, CONVERT(p.description USING utf8) AS description, 
+            p.maps_url, p.address, p.village, p.subdistrict, p.regency, 
+            p.province, f.filename, f.file_url 
             FROM PlaceManagers pm 
             LEFT JOIN Places p ON p.id = pm.place_id
             LEFT JOIN Files f ON f.id = p.cover
             WHERE p.is_deleted = 0
             `;
-        
         return defaultResult(true, 'Berhasil mendapatkan wisata!', places);
     }
 }

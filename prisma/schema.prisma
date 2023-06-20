@@ -43,7 +43,7 @@ model Roles {
 model Files {
     id          String       @id
     filename    String
-    filecode    String       @db.LongText
+    file_url    String       @db.LongText 
     created_at  DateTime     @default(now())
     updated_at  DateTime?
     deleted_at  DateTime?
@@ -57,7 +57,7 @@ model Blogs {
     id          String       @id
     slug        String
     title       String
-    content     String       @db.LongText
+    content     Bytes      @db.Blob
     file_id     Files @relation(fields: [cover], references: [id])
     cover       String
     created_at  DateTime     @default(now())
@@ -74,8 +74,8 @@ model Places {
     name        String
     file_id       Files @relation(fields: [cover], references: [id])
     cover       String
-    description String      @db.LongText
-    maps_url    String
+    description Bytes      @db.Blob
+    maps_url    String     @db.LongText
     address     String
     village     String
     subdistrict String

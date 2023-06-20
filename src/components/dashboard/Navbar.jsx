@@ -1,116 +1,35 @@
-import React from 'react';
+import useAlert from '@/hooks/useAlert';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import { setAuthUser, unsetAuthUser } from '@/stores/authUser/authUserSlice';
+import { deleteCookie, getCookieValue } from '@/utils/cookies';
 import {
-    Navbar,
-    MobileNav,
-    Typography,
-    Button,
-    Menu,
-    MenuHandler,
-    MenuList,
-    MenuItem,
-    Avatar,
+    Bars2Icon,
+    ChevronDownIcon,
+    CodeBracketSquareIcon,
+    CubeTransparentIcon,
+    HeartIcon,
+    PowerIcon,
+    PresentationChartBarIcon,
+    RocketLaunchIcon,
+    Square3Stack3DIcon,
+    UserCircleIcon
+} from '@heroicons/react/24/outline';
+import {
     Card,
     IconButton,
+    Menu,
+    MenuHandler,
+    MenuItem,
+    MenuList,
+    MobileNav,
+    Navbar,
+    Typography
 } from '@material-tailwind/react';
-import {
-    CubeTransparentIcon,
-    UserCircleIcon,
-    CodeBracketSquareIcon,
-    Square3Stack3DIcon,
-    ChevronDownIcon,
-    Cog6ToothIcon,
-    InboxArrowDownIcon,
-    LifebuoyIcon,
-    PowerIcon,
-    RocketLaunchIcon,
-    Bars2Icon,
-} from '@heroicons/react/24/outline';
-
-// profile menu component
-const profileMenuItems = [
-    {
-        label: 'My Profile',
-        icon: UserCircleIcon,
-    },
-    {
-        label: 'Edit Profile',
-        icon: Cog6ToothIcon,
-    },
-    {
-        label: 'Inbox',
-        icon: InboxArrowDownIcon,
-    },
-    {
-        label: 'Help',
-        icon: LifebuoyIcon,
-    },
-    {
-        label: 'Sign Out',
-        icon: PowerIcon,
-    },
-];
-
-function ProfileMenu() {
-    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-    const closeMenu = () => setIsMenuOpen(false);
-
-    return (
-        <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
-            <MenuHandler>
-                <Button
-                    variant="text"
-                    color="blue-gray"
-                    className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
-                >
-                    <Avatar
-                        variant="circular"
-                        size="sm"
-                        alt="candice wu"
-                        className="border border-blue-500 p-0.5"
-                        src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
-                    />
-                    <ChevronDownIcon
-                        strokeWidth={2.5}
-                        className={`h-3 w-3 transition-transform ${
-                            isMenuOpen ? 'rotate-180' : ''
-                        }`}
-                    />
-                </Button>
-            </MenuHandler>
-            <MenuList className="p-1">
-                {profileMenuItems.map(({ label, icon }, key) => {
-                    const isLastItem = key === profileMenuItems.length - 1;
-                    return (
-                        <MenuItem
-                            key={label}
-                            onClick={closeMenu}
-                            className={`flex items-center gap-2 rounded ${
-                                isLastItem
-                                    ? 'hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10'
-                                    : ''
-                            }`}
-                        >
-                            {React.createElement(icon, {
-                                className: `h-4 w-4 ${
-                                    isLastItem ? 'text-red-500' : ''
-                                }`,
-                                strokeWidth: 2,
-                            })}
-                            <Typography
-                                as="span"
-                                variant="small"
-                                className="font-normal"
-                                color={isLastItem ? 'red' : 'inherit'}
-                            >
-                                {label}
-                            </Typography>
-                        </MenuItem>
-                    );
-                })}
-            </MenuList>
-        </Menu>
-    );
-}
+import jwt_decode from 'jwt-decode';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
+import ProfileMenu from '../ui/ProfileMenu';
+import { ROLE_VISITOR } from '@/constant';
 
 // nav list menu
 const navListMenuItems = [
@@ -255,6 +174,62 @@ function NavList() {
 export default function ComplexNavbar() {
     const [isNavOpen, setIsNavOpen] = React.useState(false);
     const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
+    const authUser = useAppSelector((state) => state.authUser);
+    const router = useRouter();
+    const showAlert = useAlert();
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        const token = getCookieValue('token');
+        if (token) {
+            try {
+                const decodedToken = jwt_decode(token);
+
+                dispatch(setAuthUser(decodedToken));
+            } catch (error) {
+                console.error('Invalid token');
+            }
+        }
+    }, []);
+
+    const handleLogout = () => {
+        showAlert(
+            'Berhasil Logout',
+            'confirm',
+            'Anda akan keluar dari aku ini',
+            'Ya',
+            () => {
+                dispatch(unsetAuthUser());
+                deleteCookie('token');
+            }
+        );
+    };
+
+    const profileMenuVisitor = [
+        {
+            label: 'My Wishlist',
+            icon: HeartIcon,
+            onClick: () => router.push('/wishlists'),
+        },
+        {
+            label: 'Sign Out',
+            icon: PowerIcon,
+            onClick: () => handleLogout(),
+        },
+    ];
+
+    const profileMenuManager = [
+        {
+            label: 'Dashboard',
+            icon: PresentationChartBarIcon,
+            onClick: () => router.push('/dashboard/managers'),
+        },
+        {
+            label: 'Sign Out',
+            icon: PowerIcon,
+            onClick: () => handleLogout(),
+        },
+    ];
 
     React.useEffect(() => {
         window.addEventListener(
@@ -264,7 +239,7 @@ export default function ComplexNavbar() {
     }, []);
 
     return (
-        <Navbar className="mx-auto p-2 lg:rounded-full lg:pl-6 fixed top-2 left-4 z-10">
+        <Navbar className="lg:mx-4 p-2 lg:rounded-md lg:pl-6 fixed top-2 z-10">
             <div className="relative mx-auto flex items-center text-blue-gray-900">
                 <IconButton
                     size="sm"
@@ -275,7 +250,16 @@ export default function ComplexNavbar() {
                 >
                     <Bars2Icon className="h-6 w-6" />
                 </IconButton>
-                <ProfileMenu />
+                {authUser && (
+                    <ProfileMenu
+                        username={authUser.name}
+                        menuItems={
+                            authUser.role_id === ROLE_VISITOR
+                                ? profileMenuVisitor
+                                : profileMenuManager
+                        }
+                    />
+                )}
             </div>
             <MobileNav open={isNavOpen} className="overflow-scroll">
                 <NavList />

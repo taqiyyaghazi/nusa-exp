@@ -3,12 +3,21 @@
 import AddPlacesForm from '@/components/forms/AddPlacesForm';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { extractURLFromString, getFileBase64 } from '@/utils';
 import { useAddPlaceMutation } from '@/services/api/placesApi';
+import { useAppSelector } from '@/hooks/useRedux';
+import useAlert from '@/hooks/useAlert';
+import { useRouter } from 'next/navigation';
+import {
+    getDownloadURL,
+    ref,
+    uploadBytesResumable,
+} from 'firebase/storage';
+import { storage } from '../../../../../../../firebaseConfig';
 
 const schema = yup
     .object({
@@ -16,7 +25,7 @@ const schema = yup
         mapsUrl: yup.string().required(),
         address: yup.string().required(),
         village: yup.string().required(),
-        subDistrict: yup.string().required(),
+        subdistrict: yup.string().required(),
         regency: yup.string().required(),
         province: yup.string().required(),
         photo: yup
@@ -47,24 +56,59 @@ const AddPlaces = () => {
     const onEditorChange = (value) => {
         setEditorValue(value);
     };
+    const showAlert = useAlert();
+    const router = useRouter();
+    const [fileUrl, setFileUrl] = useState('');
 
+    const state = useAppSelector((state) => state);
     const [addPlace, { data, isLoading, isError, error }] =
         useAddPlaceMutation();
 
     const onSubmit = async (data) => {
-        const imageBase64 = await getFileBase64(data.photo[0]);
+        const file = data.photo[0];
         const mapsUrl = extractURLFromString(data.mapsUrl);
         const description = draftToHtml(
             convertToRaw(editorValue.getCurrentContent())
         );
-        const payload = {
-            ...data,
-            photo: imageBase64,
-            mapsUrl,
-            description: description,
-            filename: data.photo[0].name,
-        };
-        addPlace(payload);
+        const storageRef = ref(
+            storage,
+            `places/${Number(new Date())}-${file.name}`
+        );
+        const uploadFile = uploadBytesResumable(storageRef, file);
+        uploadFile.on(
+            'state_changed',
+            (snapshot) => {
+                const progress =
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                    case 'paused':
+                        console.log('Upload is paused');
+                        break;
+                    case 'running':
+                        console.log('Upload is running');
+                        break;
+                }
+            },
+            (error) => {
+                showAlert('Gagal upload foto!', 'error');
+            },
+            () => {
+                getDownloadURL(uploadFile.snapshot.ref).then((downloadURL) => {
+                    const payload = {
+                        ...data,
+                        photo: downloadURL,
+                        mapsUrl,
+                        description: description,
+                        filename: data.photo[0].name,
+                    };
+                    console.log(payload)
+                    addPlace(payload)
+                });
+            }
+        );
+        if (fileUrl) {
+        }
     };
 
     useEffect(() => {

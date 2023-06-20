@@ -1,5 +1,6 @@
 // Need to use the React-specific entry point to allow generating React hooks
 import { BASE_URL_API_V1 } from '@/constant';
+import { getCookieValue } from '@/utils/cookies';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 // Define a service using a base URL and expected endpoints
@@ -11,6 +12,9 @@ export const placesApi = createApi({
             query: (body) => ({
                 url: `places`,
                 method: 'POST',
+                headers: {
+                    authorization: 'Bearer ' + getCookieValue('token'),
+                },
                 body,
             }),
         }),
