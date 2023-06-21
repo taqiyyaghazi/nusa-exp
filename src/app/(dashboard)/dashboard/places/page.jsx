@@ -8,10 +8,10 @@ const Places = () => {
     return (
         <>
             <div className="grid justify-items-end">
-                <Link href="dashboard/managers/places/add-places">
+                <Link href="dashboard/places/create">
                     <Button className="flex items-center gap-3">
-                        <PlusIcon strokeWidth={2} className="h-5 w-5" /> Add to
-                        Bookmark
+                        <PlusIcon strokeWidth={2} className="h-5 w-5" /> Tambah
+                        Wisata
                     </Button>
                 </Link>
             </div>

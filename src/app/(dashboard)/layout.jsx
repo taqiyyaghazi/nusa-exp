@@ -1,6 +1,6 @@
 'use client';
 import SideBar from '@/components/dashboard/SideBar';
-import '../../globals.css';
+import '../globals.css';
 import ComplexNavbar from '@/components/dashboard/Navbar';
 import Providers from '@/components/Providers';
 

@@ -12,12 +12,8 @@ import { useAddPlaceMutation } from '@/services/api/placesApi';
 import { useAppSelector } from '@/hooks/useRedux';
 import useAlert from '@/hooks/useAlert';
 import { useRouter } from 'next/navigation';
-import {
-    getDownloadURL,
-    ref,
-    uploadBytesResumable,
-} from 'firebase/storage';
-import { storage } from '../../../../../../../firebaseConfig';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { storage } from '../../../../../../firebaseConfig';
 
 const schema = yup
     .object({
@@ -102,8 +98,8 @@ const AddPlaces = () => {
                         description: description,
                         filename: data.photo[0].name,
                     };
-                    console.log(payload)
-                    addPlace(payload)
+                    console.log(payload);
+                    addPlace(payload);
                 });
             }
         );
