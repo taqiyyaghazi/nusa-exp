@@ -62,7 +62,7 @@ const Navbar = () => {
         {
             label: 'Dashboard',
             icon: PresentationChartBarIcon,
-            onClick: () => router.push('/dashboard/managers')
+            onClick: () => router.push('/dashboard')
         },
         {
             label: 'Sign Out',

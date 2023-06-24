@@ -9,3 +9,4 @@ export const JWT_EXPIRED_AGE = process.env.JWT_AGE;
 
 export const ROLE_VISITOR = 1;
 export const ROLE_MANAGER = 2;
+export const ROLE_ADMIN = 3;

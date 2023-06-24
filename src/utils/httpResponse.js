@@ -19,3 +19,7 @@ export const SuccessCreated = (msg, data) => {
 export const SuccessOK = (msg, data) => {
     return NextResponse.json(defaultResult(true, msg, data), { status: 200 });
 };
+
+export const ErrorNotFound = (msg) => {
+    return NextResponse.json(defaultResult(true, msg), { status: 404 });
+};

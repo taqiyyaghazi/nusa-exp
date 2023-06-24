@@ -1,4 +1,5 @@
 import { ID_SIZE } from '@/constant';
+import { Prisma } from '@prisma/client';
 import { nanoid } from 'nanoid';
 
 const { defaultResult } = require('@/utils');
@@ -74,23 +75,10 @@ class PlacesService {
                 placeManagers,
             });
         } catch (err) {
-            console.log(err)
+            console.log(err);
             return defaultResult(false, 'Gagal menambahkan wisata!', err);
         }
     }
-
-    blobToText = (blob) => {
-        const reader = new FileReader();
-        return new Promise((resolve, reject) => {
-            reader.onload = () => {
-                resolve(reader.result);
-            };
-            reader.onerror = () => {
-                reject(reader.error);
-            };
-            reader.readAsText(blob);
-        });
-    };
 
     async getAllPlaces() {
         const places = await this._prisma.$queryRaw`
@@ -103,6 +91,66 @@ class PlacesService {
             WHERE p.is_deleted = 0
             `;
         return defaultResult(true, 'Berhasil mendapatkan wisata!', places);
+    }
+
+    async getPlaceById(id) {
+        const places = await this._prisma.$queryRaw`
+            SELECT p.name, p.cover, CONVERT(p.description USING utf8) AS description, 
+            p.maps_url, p.address, p.village, p.subdistrict, p.regency, 
+            p.province, f.filename, f.file_url 
+            FROM PlaceManagers pm 
+            LEFT JOIN Places p ON p.id = pm.place_id
+            LEFT JOIN Files f ON f.id = p.cover
+            WHERE p.is_deleted = 0 AND p.id = ${id}
+            `;
+
+        if (places.length === 0) {
+            return defaultResult(
+                false,
+                `Data wisata dengan id ${id} tidak ditemukan!`
+            );
+        }
+        return defaultResult(
+            true,
+            'Berhasil mendapatkan detail wisata!',
+            places[0]
+        );
+    }
+
+    async getAllPlacesUnpublished() {
+        const places = await this._prisma.$queryRaw`
+            SELECT p.id, p.name, p.address, p.village, 
+            p.subdistrict, p.regency, p.province, 
+            CASE
+                WHEN p.updated_at IS NULL THEN DATE_FORMAT(p.created_at, '%d/%m/%Y %H:%i')
+                ELSE DATE_FORMAT(p.updated_at, '%d/%m/%Y %H:%i')
+            END AS last_updated         
+            FROM Places p
+            WHERE p.is_deleted = 0 AND p.is_publish = 0
+            `;
+        return defaultResult(true, 'Berhasil mendapatkan wisata!', places);
+    }
+
+    async updateIsPublishPlace({ id, isPublish }) {
+        // TO DO: Buat fungsi untuk handling error transaksi database
+        try {
+            const place = await this._prisma.places.update({
+                where: { id: id },
+                data: { is_publish: isPublish },
+            });
+            return defaultResult(true, 'Berhasil mempublikasikan wisata!', {
+                id: place.id,
+                is_publish: place.is_publish,
+            });
+        } catch (err) {
+            if (err instanceof Prisma.PrismaClientKnownRequestError) {
+                return defaultResult(
+                    false,
+                    `Gagal mempublikasikan wisata! error: ${err.meta.cause}`
+                );
+            }
+            return defaultResult(false, 'Gagal mempublikasikan wisata!');
+        }
     }
 }
 

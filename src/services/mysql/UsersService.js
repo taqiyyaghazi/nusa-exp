@@ -46,6 +46,7 @@ class UsersService {
         }
         return true;
     }
+
     async getUserByEmail(email) {
         const user = await this._prisma.users.findUnique({
             where: {
