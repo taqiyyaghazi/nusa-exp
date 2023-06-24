@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { ROLE_VISITOR } from '@/constant';
 import useAlert from '@/hooks/useAlert';
