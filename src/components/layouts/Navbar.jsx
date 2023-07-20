@@ -20,7 +20,7 @@ import { setAuthUser, unsetAuthUser } from '@/stores/authUser/authUserSlice';
 import { useRouter } from 'next/navigation';
 
 const navigation = [
-    { name: 'Wisata', href: '#' },
+    { name: 'Wisata', href: '/places' },
     { name: 'Features', href: '#' },
     { name: 'Marketplace', href: '#' },
     { name: 'Company', href: '#' },
@@ -40,7 +40,7 @@ const Navbar = () => {
             'Anda akan keluar dari aku ini',
             'Ya',
             () => {
-                dispatch(unsetAuthUser())
+                dispatch(unsetAuthUser());
                 deleteCookie('token');
             }
         );
@@ -50,7 +50,7 @@ const Navbar = () => {
         {
             label: 'My Wishlist',
             icon: HeartIcon,
-            onClick: () => router.push('/wishlists')
+            onClick: () => router.push('/wishlists'),
         },
         {
             label: 'Sign Out',
@@ -63,7 +63,7 @@ const Navbar = () => {
         {
             label: 'Dashboard',
             icon: PresentationChartBarIcon,
-            onClick: () => router.push('/dashboard')
+            onClick: () => router.push('/dashboard'),
         },
         {
             label: 'Sign Out',

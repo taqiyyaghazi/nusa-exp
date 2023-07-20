@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { useEffect } from 'react';
+import Card from '../ui/Card';
 
 const posts = [
     {
@@ -90,7 +91,7 @@ const posts = [
     // More posts...
 ];
 
-export default function PlacesSection() {
+export default function PlacesSection({ datas, isLoading }) {
     return (
         <div id="place-section" className="bg-white py-24 sm:py-32">
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -104,54 +105,9 @@ export default function PlacesSection() {
                         Indonesia&apos;s Hidden Gems.
                     </p>
                 </div>
-                <div className="snap-x flex overflow-x-auto border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16">
-                    {posts.map((post) => (
-                        <article
-                            key={post.id}
-                            className="snap-center flex-shrink-0 w-96 flex flex-col items-start justify-between mx-2"
-                        >
-                            <figure className="my-3 h-56 w-full relative">
-                                <Image
-                                    src="/images/dummy/bromo.jpg"
-                                    alt="Shoes"
-                                    fill={true}
-                                    className="rounded-xl object-cover"
-                                />
-                            </figure>
-                            <div className="flex items-center gap-x-4 text-xs">
-                                <a
-                                    href={post.category.href}
-                                    className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"
-                                >
-                                    {post.category.title}
-                                </a>
-                            </div>
-                            <div className="group relative">
-                                <h3 className="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
-                                    <a href={post.href}>
-                                        <span className="absolute inset-0" />
-                                        {post.name}
-                                    </a>
-                                </h3>
-                                <p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">
-                                    {post.description}
-                                </p>
-                            </div>
-                            <div className="relative mt-8 flex items-center gap-x-4">
-                                <div className="text-sm leading-6">
-                                    <p className="font-semibold text-gray-900">
-                                        <a href={post.author.href}>
-                                            <span className="absolute inset-0" />
-                                            {post.author.name}
-                                        </a>
-                                    </p>
-                                    <p className="text-gray-600">
-                                        {post.author.role}
-                                    </p>
-                                </div>
-                            </div>
-                        </article>
-                    ))}
+                <div className="md:flex gap-2 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16">
+                    {!isLoading &&
+                        datas.slice(0, 3).map((data) => <Card key={data.id} data={data} />)}
                 </div>
             </div>
         </div>

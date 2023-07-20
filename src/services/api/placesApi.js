@@ -18,9 +18,15 @@ export const placesApi = createApi({
                 body,
             }),
         }),
+        getAllPlaces: build.query({
+            query: () => ({
+                url: `places`,
+                method: 'GET',
+            })
+        }),
     }),
 });
 
 // Export hooks for usage in function components, which are
 // auto-generated based on the defined endpoints
-export const { useAddPlaceMutation } = placesApi;
+export const { useAddPlaceMutation, useGetAllPlacesQuery } = placesApi;
